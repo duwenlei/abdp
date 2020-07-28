@@ -2,11 +2,17 @@ logging:
   level:
     root: info
   file:
-    path: logs/
-    name: logs/abdp.log
+    path: logs
+    name: ${logging.file.path}/${spring.application.name}.log
     max-size: 100MB
     max-history: 15
     total-size-cap: 5GB
 spring:
   application:
     name: abdp
+  thymeleaf:
+    prefix: classpath:/templates/
+    cache: false
+    servlet:
+      content-type: text/html
+    suffix: .html
