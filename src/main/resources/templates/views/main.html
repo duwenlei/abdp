@@ -4,32 +4,85 @@
     <meta charset="UTF-8">
     <title>主页</title>
     <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/custom/css/menu.css}">
     <style>
         html, body {
             height: 100%;
         }
 
-        .main-row-height-100 {
-            height: 95%;
+        .main-row-height-95 {
+            height: 100%;
             box-sizing: border-box;
         }
+
+        .col-1-custom {
+            -ms-flex: 0 0 13%;
+            flex: 0 0 13%;
+            max-width: 13%;
+            position: relative;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        .col-9-custom {
+            -ms-flex: 0 0 87%;
+            flex: 0 0 87%;
+            max-width: 87%;
+            position: relative;
+            width: 100%;
+            padding-right: 15px;
+            padding-left: 15px;
+        }
+
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        .content-height-100 {
+            height: 100%;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px; /*滚动条宽度*/
+            /*height: 6px; !*滚动条高度*!*/
+        }
+
+        ::-webkit-scrollbar-thumb { /*滚动条里面小方块*/
+            border-radius: 5px;
+            -webkit-box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .main-menu {
+            background: #494A5F;
+        }
+
     </style>
 </head>
-<body>
-<div th:insert="views/main/header :: header" style="height: 6%;"></div>
-<div class="container-fluid main-row-height-100">
-    <div class="row main-row-height-100">
-        <div id="sidebarMenu main-row-height-100" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse"
+<body class="overflow-hidden">
+
+<div class="container-fluid main-row-height-95">
+    <div class="row main-row-height-95 ">
+        <div id="sidebarMenu"
+             class="col-1-custom d-md-block bg-light sidebar collapse content-height-100 main-menu"
              th:insert="views/main/menu::menu">
         </div>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <div layout:fragment="content"></div>
+        <main role="main" class="col-9-custom content-height-100 overflow-auto" style="padding: 0;">
+            <div th:insert="views/main/header :: header" style="left: 13%;background-color: #e9ecef" class="fixed-top"></div>
+            <div layout:fragment="content" style="margin-top: 4%;">
+                首页
+            </div>
         </main>
     </div>
 </div>
-<script th:src="@{/jquery/jquery-3.3.1.slim.min.js}"></script>
+<script th:src="@{/jquery/jquery-3.3.1.min.js}"></script>
 <script th:src="@{/popper/popper.min.js}"></script>
 <script th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/custom/js/menu.js}"></script>
+<script>
+    $.sidebarMenu($('.sidebar-menu'))
+</script>
 </body>
 </html>

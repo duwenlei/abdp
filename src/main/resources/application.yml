@@ -16,3 +16,6 @@ spring:
     servlet:
       content-type: text/html
     suffix: .html
+server:
+  servlet:
+    context-path: /abdp

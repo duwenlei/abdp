@@ -3,83 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <title>菜单</title>
-
+    <link rel="stylesheet" th:href="@{/custom/css/menu.css}">
 </head>
 <body>
-<nav th:fragment="menu">
-    <div class="sidebar-sticky pt-3">
-        <ul class="nav flex-column">
-            <li class="nav-item">
-                <a class="nav-link active" href="#">
-                    <span data-feather="home"></span>
-                    首页 <span class="sr-only">(current)</span>
+<!--<nav th:fragment="menu">-->
+<aside class="main-sidebar  overflow-auto" th:fragment="menu">
+    <section class="sidebar">
+        <ul class="sidebar-menu">
+            <li class="header">常用</li>
+            <li class="treeview ${tab eq '/'} ? active">
+                <a th:href="@{/main}">
+                    <i>
+                        <svg class="bi bi-bootstrap-fill" width="14" height="14" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M4.002 0a4 4 0 0 0-4 4v8a4 4 0 0 0 4 4h8a4 4 0 0 0 4-4V4a4 4 0 0 0-4-4h-8zm1.06 12h3.475c1.804 0 2.888-.908 2.888-2.396 0-1.102-.761-1.916-1.904-2.034v-.1c.832-.14 1.482-.93 1.482-1.816 0-1.3-.955-2.11-2.542-2.11H5.062V12zm1.313-4.875V4.658h1.78c.973 0 1.542.457 1.542 1.237 0 .802-.604 1.23-1.764 1.23H6.375zm0 3.762h1.898c1.184 0 1.81-.48 1.81-1.377 0-.885-.65-1.348-1.886-1.348H6.375v2.725z"/>
+                        </svg>
+                    </i>
+                    <span>首页</span>
+                    <i class="fa float-right">
+                        <svg class="bi bi-chevron-left" width="10" height="10" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                        </svg>
+                    </i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
+                </ul>
+            </li>
+            <li class="treeview ${tab eq '/user/create'} ? active">
+                <a href="#">
+                    <i>
+                        <svg class="bi bi-layout-wtf" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M5 1H1v8h4V1zM1 0a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H1zm13 2H9v5h5V2zM9 1a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9zM5 13H3v2h2v-2zm-2-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H3zm12-1H9v2h6v-2zm-6-1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1H9z"/>
+                        </svg>
+                    </i>
+                    <span>布局选项</span>
+                    <span class="badge badge-primary float-right">4</span>
+                </a>
+                <ul class="treeview-menu" style="display: none;">
+                    <li><a th:href="@{/user/create}"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Boxed</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Fixed</a></li>
+                    <li class=""><a href="#"><i class="fa fa-circle-o"></i> Collapsed Sidebar</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-th"></i> <span>Widgets</span>
+                    <small class="label pull-right label-info">new</small>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" th:href="@{/user/create}">
-                    <span data-feather="file"></span>
-                    用户管理
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-pie-chart"></i>
+                    <span>Charts</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> ChartJS</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Morris</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Flot</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Inline charts</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-laptop"></i>
+                    <span>UI Elements</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> General</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Icons</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Buttons</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Sliders</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Timeline</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Modals</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-edit"></i> <span>Forms</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> General Elements</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Editors</a></li>
+                </ul>
+            </li>
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-table"></i> <span>Tables</span>
+                    <i class="fa fa-angle-left pull-right"></i>
+                </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Simple tables</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Data tables</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#">
+                    <i class="fa fa-calendar"></i> <span>Calendar</span>
+                    <small class="label pull-right label-danger">3</small>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="shopping-cart"></span>
-                    Products
+            <li>
+                <a href="#">
+                    <i class="fa fa-envelope"></i> <span>Mailbox</span>
+                    <small class="label pull-right label-warning">12</small>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="users"></span>
-                    Customers
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-folder"></i> <span>Examples</span>
+                    <i class="fa fa-angle-left pull-right"></i>
                 </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Invoice</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Profile</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Login</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Register</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Lockscreen</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 404 Error</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> 500 Error</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Blank Page</a></li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Pace Page</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="bar-chart-2"></span>
-                    Reports
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-share"></i> <span>Multilevel</span>
+                    <i class="fa fa-angle-left pull-right"></i>
                 </a>
+                <ul class="treeview-menu">
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                    <li>
+                        <a href="#"><i class="fa fa-circle-o"></i> Level One <i class="fa fa-angle-left pull-right"></i></a>
+                        <ul class="treeview-menu">
+                            <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                            <li>
+                                <a href="#"><i class="fa fa-circle-o"></i> Level Two <i
+                                        class="fa fa-angle-left pull-right"></i></a>
+                                <ul class="treeview-menu">
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                    <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                </ul>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="layers"></span>
-                    Integrations
-                </a>
-            </li>
+            <li><a href="#"><i class="fa fa-book"></i> <span>Documentation</span></a></li>
+            <li class="header">标签</li>
+            <li><a href="#"><i class="fa fa-circle-o text-red"></i> <span>Important</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> <span>Warning</span></a></li>
+            <li><a href="#"><i class="fa fa-circle-o text-aqua"></i> <span>Information</span></a></li>
         </ul>
-
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-            <span>Saved reports</span>
-            <a class="d-flex align-items-center text-muted" href="#" aria-label="Add a new report">
-                <span data-feather="plus-circle"></span>
-            </a>
-        </h6>
-        <ul class="nav flex-column mb-2">
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Current month
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Last quarter
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Social engagement
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="file-text"></span>
-                    Year-end sale
-                </a>
-            </li>
-        </ul>
-    </div>
-</nav>
+    </section>
+</aside>
 </body>
 </html>
