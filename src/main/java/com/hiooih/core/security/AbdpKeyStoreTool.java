@@ -68,7 +68,12 @@ public class AbdpKeyStoreTool {
 //
 //        builder.addAttribute(PKCSObjectIdentifiers.pkcs_9_at_extensionRequest, extensionsGenerator.generate());
         CertificateSigningRequest certificateSigningRequest = new CertificateSigningRequest.Builder()
-                .addPrincipalName("DWL")
+                .addCN("www.hiooih.com")
+                .addC("CN")
+                .addST("NMG")
+                .addL("CF")
+                .addO("hiooih")
+                .addOU("IT")
                 .addSignatureAlgorithm("SHA256WithRSA")
                 .addPrivateKey(keyPair.getPrivate())
                 .addPublicKey(keyPair.getPublic())

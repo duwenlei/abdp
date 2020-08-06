@@ -6,13 +6,8 @@ import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
-import org.bouncycastle.util.encoders.Base64;
-import sun.security.tools.keytool.CertAndKeyGen;
 
 import javax.security.auth.x500.X500Principal;
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.Objects;
@@ -27,7 +22,18 @@ public class CertificateSigningRequest {
     /**
      * 内容
      */
-    private final String principalName;
+    private String principalName;
+
+    /**
+     * CN=%s,C=CN,ST=NMG,L=CF,O=HIOOIH,OU=IT,EMAIL=hiooih@163.com
+     */
+    private final String cn;
+    private final String c;
+    private final String st;
+    private final String l;
+    private final String o;
+    private final String ou;
+
 
     /**
      * 签名算法
@@ -44,8 +50,14 @@ public class CertificateSigningRequest {
      */
     private final PrivateKey privateKey;
 
+    /**
+     * CSR 生成
+     *
+     * @return P10 CSR
+     * @throws OperatorCreationException
+     */
     public PKCS10CertificationRequest getCSR() throws OperatorCreationException {
-        Objects.requireNonNull(principalName, "CN 不能为空");
+        Objects.requireNonNull(principalName, "内容不能为空");
         Objects.requireNonNull(signatureAlgorithm, "signatureAlgorithm 不能为空");
         Objects.requireNonNull(privateKey, "privateKey 不能为空");
         Objects.requireNonNull(publicKey, "publicKey 不能为空");
@@ -53,7 +65,7 @@ public class CertificateSigningRequest {
         // 生成 PKCS10CertificationRequestBuilder
         PKCS10CertificationRequestBuilder pkcs10CertificationRequestBuilder = new JcaPKCS10CertificationRequestBuilder(new X500Principal(principalName), publicKey);
 
-        // 扩展
+        // TODO 扩展
 
         // 内容签名
         JcaContentSignerBuilder jcaContentSignerBuilder = new JcaContentSignerBuilder(signatureAlgorithm);
@@ -62,24 +74,50 @@ public class CertificateSigningRequest {
         return pkcs10CertificationRequestBuilder.build(contentSigner);
     }
 
+
     private CertificateSigningRequest(Builder builder) {
-        this.principalName = builder.principalName;
         this.signatureAlgorithm = builder.signatureAlgorithm;
         this.privateKey = builder.privateKey;
         this.publicKey = builder.publicKey;
+        this.cn = builder.cn;
+        this.c = builder.c;
+        this.st = builder.st;
+        this.l = builder.l;
+        this.o = builder.o;
+        this.ou = builder.ou;
+        StringBuilder sb = new StringBuilder();
+        if (Objects.nonNull(this.cn)) {
+            sb.append("CN=").append(this.cn).append(",");
+        }
+        if (Objects.nonNull(this.c)) {
+            sb.append("C=").append(this.c).append(",");
+        }
+        if (Objects.nonNull(this.st)) {
+            sb.append("ST=").append(this.st).append(",");
+        }
+        if (Objects.nonNull(this.l)) {
+            sb.append("L=").append(this.l).append(",");
+        }
+        if (Objects.nonNull(this.o)) {
+            sb.append("O=").append(this.o).append(",");
+        }
+        if (Objects.nonNull(this.ou)) {
+            sb.append("OU=").append(this.ou).append(",");
+        }
+        this.principalName = sb.substring(0, sb.length() - 1);
     }
 
     public static class Builder {
-        private String principalName;
         private String signatureAlgorithm;
         private PublicKey publicKey;
         private PrivateKey privateKey;
 
-
-        public Builder addPrincipalName(String principalName) {
-            this.principalName = String.format("CN=%s,C=CN,ST=NMG,L=CF,O=HIOOIH,OU=IT,EMAIL=hiooih@163.com", principalName);
-            return this;
-        }
+        private String cn;
+        private String c;
+        private String st;
+        private String l;
+        private String o;
+        private String ou;
 
         public Builder addSignatureAlgorithm(String signatureAlgorithm) {
             this.signatureAlgorithm = signatureAlgorithm;
@@ -96,23 +134,39 @@ public class CertificateSigningRequest {
             return this;
         }
 
+        public Builder addCN(String cn) {
+            this.cn = cn;
+            return this;
+        }
+
+        public Builder addC(String c) {
+            this.c = c;
+            return this;
+        }
+
+        public Builder addST(String st) {
+            this.st = st;
+            return this;
+        }
+
+        public Builder addL(String l) {
+            this.l = l;
+            return this;
+        }
+
+        public Builder addO(String o) {
+            this.o = o;
+            return this;
+        }
+
+        public Builder addOU(String ou) {
+            this.ou = ou;
+            return this;
+        }
+
 
         public CertificateSigningRequest build() {
             return new CertificateSigningRequest(this);
         }
-    }
-
-    public static void main(String[] args) throws NoSuchAlgorithmException, InvalidKeyException, OperatorCreationException, IOException {
-        CertAndKeyGen certAndKeyGen = new CertAndKeyGen("RSA", "SHA256WithRSA");
-        certAndKeyGen.generate(1024);
-
-        CertificateSigningRequest certificateSigningRequest = new Builder()
-                .addPrincipalName("DWL")
-                .addSignatureAlgorithm("SHA256WithRSA")
-                .addPrivateKey(certAndKeyGen.getPrivateKey())
-                .addPublicKey(certAndKeyGen.getPublicKeyAnyway())
-                .build();
-        PKCS10CertificationRequest csr = certificateSigningRequest.getCSR();
-        System.out.println(new String(Base64.encode(csr.getEncoded())));
     }
 }
