@@ -13,7 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RootCaGenerateTest {
 
-    @Test
+    /**
+     * 生成 root.jks 工具
+     */
+//    @Test
     void generateRootCa() {
         RootCaGenerate rootCaGenerate = new RootCaGenerate();
         try {
