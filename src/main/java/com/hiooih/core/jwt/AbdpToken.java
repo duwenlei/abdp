@@ -70,7 +70,7 @@ public class AbdpToken {
         DecodedJWT decodedJWT = verifier.verify(token);
         Map<String, Object> userInfo = decodedJWT.getClaim("userInfo").asMap();
 
-        // 验证
+        // TODO 验证
 
         return false;
     }
