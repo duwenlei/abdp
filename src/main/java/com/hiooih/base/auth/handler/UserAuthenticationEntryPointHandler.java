@@ -22,6 +22,6 @@ public class UserAuthenticationEntryPointHandler implements AuthenticationEntryP
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         response.setStatus(401);
-        response.getOutputStream().write(ApiResult.failure(ApiCode.FORBIDDEN_RESOURCE).toString().getBytes(StandardCharsets.UTF_8));
+        ApiResult.response(response, ApiCode.FORBIDDEN_RESOURCE);
     }
 }

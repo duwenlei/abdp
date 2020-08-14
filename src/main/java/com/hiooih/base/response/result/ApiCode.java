@@ -19,6 +19,7 @@ public enum ApiCode {
     LOGIN_SUCCESS(1008, "登录成功"),
     CAPTCHA_ERROR(1009, "验证码错误"),
     USER_LOGOUT_SUCCESS(1010, "退出登录"),
+    JWT_AUTH_FILTER_FAILURE(1011, "无效的令牌"),
 
 
     // 参数错误 10000 ~ 19999

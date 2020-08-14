@@ -70,11 +70,12 @@ public class UserWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
         auth.authenticationProvider(userAuthenticationProvider);
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // 不进行验证的请求地址
-                .antMatchers("").permitAll()
+                .antMatchers("/user/login", "/system/sysUser/save","/abdp/system/sysUser/save").permitAll()
                 // 其他的请求地址，需要登录才能访问
                 .anyRequest().authenticated()
                 .and()
@@ -82,12 +83,12 @@ public class UserWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
                 .httpBasic().authenticationEntryPoint(userAuthenticationEntryPointHandler)
                 .and()
                 .formLogin()
-                .loginProcessingUrl("user/login")
+                .loginProcessingUrl("/user/login")
                 .successHandler(userAuthenticationSuccessHandler)
                 .failureHandler(userAuthenticationFailureHandler)
                 .and()
                 .logout()
-                .logoutUrl("user/logout")
+                .logoutUrl("/user/logout")
                 .logoutSuccessHandler(userLogoutSuccessHandler)
                 .and()
                 .exceptionHandling()

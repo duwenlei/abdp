@@ -10,12 +10,15 @@ logging:
 spring:
   application:
     name: abdp
-  thymeleaf:
-    prefix: classpath:/templates/
-    cache: false
-    servlet:
-      content-type: text/html
-    suffix: .html
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?serverTimezone=GMT%2B8
+    username: root
+    password: root
+    type: com.zaxxer.hikari.HikariDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+mybatis-plus:
+  # 扫描 mapper.xml
+  mapper-locations: classpath:/mapper/*Mapper.xml
 server:
   servlet:
     context-path: /abdp

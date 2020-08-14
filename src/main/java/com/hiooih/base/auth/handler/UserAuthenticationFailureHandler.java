@@ -24,8 +24,8 @@ public class UserAuthenticationFailureHandler implements AuthenticationFailureHa
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         if (exception instanceof UsernameNotFoundException) {
-            response.getOutputStream().write(ApiResult.failure(ApiCode.USERNAME_NOT_FOUND).toString().getBytes(StandardCharsets.UTF_8));
+            ApiResult.response(response, ApiCode.USERNAME_NOT_FOUND);
         }
-        response.getOutputStream().write(ApiResult.failure().toString().getBytes(StandardCharsets.UTF_8));
+        ApiResult.response(response, ApiCode.FAILURE);
     }
 }

@@ -22,6 +22,6 @@ public class UserAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
         response.setStatus(403);
-        response.getOutputStream().write(ApiResult.failure(ApiCode.FORBIDDEN_RESOURCE).toString().getBytes(StandardCharsets.UTF_8));
+        ApiResult.response(response, ApiCode.FORBIDDEN_RESOURCE);
     }
 }

@@ -28,6 +28,9 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -39,6 +42,9 @@ public class AbdpToken {
 
     @Autowired
     private ConfigService configService;
+
+    @Autowired
+    private JwtConfig jwtConfig;
 
 
     /**
@@ -58,21 +64,26 @@ public class AbdpToken {
 
         // 生成 Token
         Algorithm algorithm = Algorithm.RSA256(RSA_PUBLIC_KEY, RSA_PRIVATE_KEY);
-        return JWT.create()
+        String tokenExpire = jwtConfig.getTokenExpire();
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, Integer.parseInt(tokenExpire));
+        String sign = JWT.create()
+                .withIssuer("abdp")
+                .withIssuedAt(new Date())
+                .withExpiresAt(calendar.getTime())
                 .withClaim("userInfo", userEntity.getMap())
                 .sign(algorithm);
+        return String.format("%s%s", jwtConfig.getTokenPrefix(), sign);
     }
 
-    public boolean verify(String token) {
+    public DecodedJWT verify(String token) throws UnrecoverableKeyException, CertificateException, NoSuchAlgorithmException, KeyStoreException, IOException {
+        // 初始化
+        initKey();
         Algorithm algorithm = Algorithm.RSA256(RSA_PUBLIC_KEY, RSA_PRIVATE_KEY);
         JWTVerifier verifier = JWT.require(algorithm)
                 .build();
         DecodedJWT decodedJWT = verifier.verify(token);
-        Map<String, Object> userInfo = decodedJWT.getClaim("userInfo").asMap();
-
-        // TODO 验证
-
-        return false;
+        return decodedJWT;
     }
 
     private void initKey() throws KeyStoreException, IOException, CertificateException, NoSuchAlgorithmException, UnrecoverableKeyException {
@@ -90,11 +101,11 @@ public class AbdpToken {
 
         KeyStore store = KeyStore.getInstance("jks");
         FileInputStream inputStream = new FileInputStream(userJksFile);
-        store.load(inputStream, KeyStoreConst.PASSWORD.toCharArray());
+        store.load(inputStream, KeyStoreConst.SUB_PASSWORD.toCharArray());
 
-        X509Certificate userCert = (X509Certificate) store.getCertificate(KeyStoreConst.ROOT_CA_ALIAS);
+        X509Certificate userCert = (X509Certificate) store.getCertificate(KeyStoreConst.SUB_CA_ALIAS);
         RSA_PUBLIC_KEY = (RSAPublicKey) userCert.getPublicKey();
-        RSA_PRIVATE_KEY = (RSAPrivateKey) store.getKey(KeyStoreConst.ROOT_PRIVATE_KEY_ALIAS, KeyStoreConst.PASSWORD.toCharArray());
+        RSA_PRIVATE_KEY = (RSAPrivateKey) store.getKey(KeyStoreConst.SUB_PRIVATE_KEY_ALIAS, KeyStoreConst.SUB_PASSWORD.toCharArray());
         // close stream
         inputStream.close();
     }

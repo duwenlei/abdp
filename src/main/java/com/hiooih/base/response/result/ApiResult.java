@@ -61,13 +61,15 @@ public class ApiResult<T> implements Serializable {
 
     public static void response(HttpServletResponse response, ApiCode code, Object data) throws IOException {
         ServletOutputStream outputStream = response.getOutputStream();
+        response.setContentType("application/json; charset=UTF-8");
         ApiResult<Object> apiResult = new ApiResult<>(code.getCode(), code.getMsg(), data);
-        outputStream.write(apiResult.toString().getBytes(StandardCharsets.UTF_8));
+        outputStream.write(apiResult.toJson().getBytes(StandardCharsets.UTF_8));
     }
     public static void response(HttpServletResponse response, ApiCode code) throws IOException {
         ServletOutputStream outputStream = response.getOutputStream();
+        response.setContentType("application/json; charset=UTF-8");
         ApiResult<Object> apiResult = new ApiResult<>(code.getCode(), code.getMsg());
-        outputStream.write(apiResult.toString().getBytes(StandardCharsets.UTF_8));
+        outputStream.write(apiResult.toJson().getBytes(StandardCharsets.UTF_8));
     }
 
     public String toJson() {
