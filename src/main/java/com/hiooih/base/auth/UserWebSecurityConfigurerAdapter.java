@@ -10,6 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.vote.AuthenticatedVoter;
+import org.springframework.security.access.vote.UnanimousBased;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -19,6 +22,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.access.expression.WebExpressionVoter;
+
+import java.util.Arrays;
 
 /**
  * @author duwenlei
@@ -75,7 +81,8 @@ public class UserWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // 不进行验证的请求地址
-                .antMatchers("/user/login", "/system/sysUser/save","/abdp/system/sysUser/save").permitAll()
+                .antMatchers("/user/login", "/system/sysUser/save", "/abdp/system/sysUser/save").permitAll()
+                .accessDecisionManager(accessDecisionManager())
                 // 其他的请求地址，需要登录才能访问
                 .anyRequest().authenticated()
                 .and()
@@ -102,6 +109,17 @@ public class UserWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.headers().cacheControl();
         http.addFilter(new JwtAuthenticationTokenFilter(authenticationManager()));
+    }
+
+    @Bean
+    public AccessDecisionManager accessDecisionManager() {
+        return new UnanimousBased(
+                Arrays.asList(
+                        new WebExpressionVoter(),
+                        new UserAccessDecisionVoter(),
+                        new AuthenticatedVoter()
+                )
+        );
     }
 
     @Bean

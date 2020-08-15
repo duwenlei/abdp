@@ -3,6 +3,7 @@ package com.hiooih.abdp.system.controller;
 
 import com.hiooih.abdp.system.entity.SysUser;
 import com.hiooih.abdp.system.service.ISysUserService;
+import com.hiooih.base.response.result.ApiResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,10 +31,8 @@ public class SysUserController {
     private ISysUserService userService;
 
     @PostMapping("/save")
-    public String save() {
+    public ApiResult<Object> save() {
         SysUser sysUser = new SysUser();
-        sysUser.setDataCreated(new Date());
-        sysUser.setLastUpdated(new Date());
         sysUser.setUsername("dwl");
         sysUser.setStatus("正常");
         sysUser.setFullname("杜文磊");
@@ -41,7 +40,7 @@ public class SysUserController {
         sysUser.setSalt("bbbbb");
 
         userService.save(sysUser);
-        return "success";
+        return ApiResult.success();
     }
 }
 

@@ -5,6 +5,7 @@ import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,13 +20,13 @@ public class AuthenticationUserEntity {
     private String userName;
     private String passwordHash;
 
-    private Set<GrantedAuthority> authorities;
+    private List<String> authorities;
 
 
     public Map<String, Object> getMap() {
         Map<String, Object> entityMap = new HashMap<>(2);
         entityMap.put("userName", userName);
-        entityMap.put("passwordHash", passwordHash);
+        entityMap.put("authorities", authorities);
         return entityMap;
     }
 }

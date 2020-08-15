@@ -66,7 +66,7 @@ public class AbdpToken {
         Algorithm algorithm = Algorithm.RSA256(RSA_PUBLIC_KEY, RSA_PRIVATE_KEY);
         String tokenExpire = jwtConfig.getTokenExpire();
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.MILLISECOND, Integer.parseInt(tokenExpire));
+        calendar.add(Calendar.SECOND, Integer.parseInt(tokenExpire));
         String sign = JWT.create()
                 .withIssuer("abdp")
                 .withIssuedAt(new Date())

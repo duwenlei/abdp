@@ -7,6 +7,8 @@ import com.hiooih.core.jwt.entity.AuthenticationUserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -18,8 +20,12 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 登录成功
@@ -37,6 +43,15 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         AuthenticationUserEntity principal = (AuthenticationUserEntity) authentication.getPrincipal();
         try {
+
+            // TODO 数据库查询角色信息
+
+            List<String> grants = new ArrayList<>();
+            grants.add("ADMIN");
+            grants.add("USER");
+            grants.add("SYSTEM");
+            principal.setAuthorities(grants);
+
             String token = abdpToken.create(principal);
             Map<String, String> respData = new HashMap<>(1);
             respData.put("token", token);

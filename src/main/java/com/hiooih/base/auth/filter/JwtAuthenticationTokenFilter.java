@@ -9,6 +9,10 @@ import com.hiooih.core.jwt.AbdpToken;
 import com.hiooih.core.jwt.JwtConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
 
@@ -21,8 +25,13 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 验证 Token
@@ -50,6 +59,17 @@ public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
             DecodedJWT verify = abdpToken.verify(token);
             Map<String, Object> userInfo = verify.getClaim("userInfo").asMap();
             log.info(userInfo.toString());
+
+            String userName = (String) userInfo.get("userName");
+            ArrayList<String> authorities = (ArrayList<String>) userInfo.get("authorities");
+            Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
+            for (String role : authorities) {
+                grantedAuthorities.add(new SimpleGrantedAuthority(role));
+            }
+
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userName, null, grantedAuthorities);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
             chain.doFilter(request, response);
         } catch (Exception e) {
             log.error("Token 验证异常，原因：{}", e.getMessage(), e);
