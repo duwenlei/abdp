@@ -8,12 +8,13 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.hiooih.base.mybatis.entity.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 /**
  * <p>
- * 
+ *
  * </p>
  *
  * @author duwenlei
@@ -22,24 +23,12 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName(value = "sys_user_role")
-public class SysUserRole implements Serializable {
-
-    private static final long serialVersionUID=1L;
-
-    @TableId(type = IdType.AUTO)
-    private int id;
+public class SysUserRole extends BaseEntity implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     @TableField
     private Integer userId;
 
     @TableField
     private Integer roleId;
-
-    @TableField
-    private Date dataCreated;
-
-    @TableField
-    private Date lastUpdated;
-
-
 }

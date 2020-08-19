@@ -1,5 +1,6 @@
 package com.hiooih.base.auth;
 
+import com.hiooih.AbdpApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
@@ -42,16 +43,13 @@ public class UserAccessDecisionVoter implements AccessDecisionVoter<Object> {
 
         // 当前用户的角色列表
         Collection<? extends GrantedAuthority> grantedAuthorities = authentication.getAuthorities();
-        // 当前访问地址需要的角色
-        // 应该是去数据库中或者缓存中去查询，目前先简单判断一下，取地址第一个/*/中的内容
-        String role = requestUrl.substring(requestUrl.indexOf("/") + 1, requestUrl.indexOf("/", 2));
-        log.info("当前路径需要的角色为：[{}]", role);
 
+        // 取得当前路径访问需要的角色
+//        AbdpApplication.getBean()
 
-        // 取得调用者的所有权限
 
         for (GrantedAuthority grantedAuthority : grantedAuthorities) {
-            if (grantedAuthority.getAuthority().equalsIgnoreCase(role)) {
+            if (grantedAuthority.getAuthority().equalsIgnoreCase(requestUrl)) {
                 // 授权访问
                 return ACCESS_GRANTED;
             }

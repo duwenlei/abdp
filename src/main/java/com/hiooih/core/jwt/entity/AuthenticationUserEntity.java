@@ -17,7 +17,8 @@ import java.util.Set;
 @Getter
 @Setter
 public class AuthenticationUserEntity {
-    private String userName;
+    private int userId;
+    private String username;
     private String passwordHash;
 
     private List<String> authorities;
@@ -25,8 +26,8 @@ public class AuthenticationUserEntity {
 
     public Map<String, Object> getMap() {
         Map<String, Object> entityMap = new HashMap<>(2);
-        entityMap.put("userName", userName);
-        entityMap.put("authorities", authorities);
+        entityMap.put("username", username);
+        entityMap.put("userId", userId);
         return entityMap;
     }
 }

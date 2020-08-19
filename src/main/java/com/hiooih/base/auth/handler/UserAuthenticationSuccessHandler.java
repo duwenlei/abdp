@@ -1,11 +1,14 @@
 package com.hiooih.base.auth.handler;
 
+import com.hiooih.abdp.system.entity.SysUser;
+import com.hiooih.abdp.system.service.ISysUserService;
 import com.hiooih.base.response.result.ApiCode;
 import com.hiooih.base.response.result.ApiResult;
 import com.hiooih.core.jwt.AbdpToken;
 import com.hiooih.core.jwt.entity.AuthenticationUserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,19 +42,14 @@ public class UserAuthenticationSuccessHandler implements AuthenticationSuccessHa
     @Autowired
     private AbdpToken abdpToken;
 
+    @Autowired
+    @Qualifier("sysUserService")
+    private ISysUserService sysUserService;
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         AuthenticationUserEntity principal = (AuthenticationUserEntity) authentication.getPrincipal();
         try {
-
-            // TODO 数据库查询角色信息
-
-            List<String> grants = new ArrayList<>();
-            grants.add("ADMIN");
-            grants.add("USER");
-            grants.add("SYSTEM");
-            principal.setAuthorities(grants);
-
             String token = abdpToken.create(principal);
             Map<String, String> respData = new HashMap<>(1);
             respData.put("token", token);

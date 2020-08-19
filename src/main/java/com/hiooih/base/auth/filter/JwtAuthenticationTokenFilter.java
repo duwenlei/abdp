@@ -2,36 +2,26 @@ package com.hiooih.base.auth.filter;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.hiooih.AbdpApplication;
-import com.hiooih.base.exception.AbdpException;
+import com.hiooih.abdp.system.entity.SysUser;
+import com.hiooih.abdp.system.service.ISysUserService;
+import com.hiooih.abdp.system.service.impl.SysUserServiceImpl;
 import com.hiooih.base.response.result.ApiCode;
 import com.hiooih.base.response.result.ApiResult;
 import com.hiooih.core.jwt.AbdpToken;
 import com.hiooih.core.jwt.JwtConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 
 /**
  * 验证 Token
@@ -45,11 +35,17 @@ public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
         super(authenticationManager);
     }
 
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         // 手动注入 Bean
         JwtConfig jwtConfig = (JwtConfig) AbdpApplication.getBean("jwtConfig", JwtConfig.class);
         AbdpToken abdpToken = (AbdpToken) AbdpApplication.getBean("abdpToken", AbdpToken.class);
+        ISysUserService sysUserService = (ISysUserService) AbdpApplication.getBean("sysUserService", SysUserServiceImpl.class);
+
+//        ISysUserRoleService sysUserRoleService = (ISysUserRoleService) AbdpApplication.getBean("sysUserRoleService", SysUserRoleServiceImpl.class);
+//        ISysPermissionService sysPermissionService = (ISysPermissionService) AbdpApplication.getBean("sysPermissionService", SysPermissionServiceImpl.class);
+//        ISysRolePermissionService sysRolePermissionService = (ISysRolePermissionService) AbdpApplication.getBean("sysRolePermissionService", SysRolePermissionServiceImpl.class);
 
         String authenticationToken = request.getHeader(jwtConfig.getTokenHeader());
         String token = authenticationToken.replace(jwtConfig.getTokenPrefix(), "");
@@ -60,16 +56,14 @@ public class JwtAuthenticationTokenFilter extends BasicAuthenticationFilter {
             Map<String, Object> userInfo = verify.getClaim("userInfo").asMap();
             log.info(userInfo.toString());
 
-            String userName = (String) userInfo.get("userName");
-            ArrayList<String> authorities = (ArrayList<String>) userInfo.get("authorities");
-            Collection<GrantedAuthority> grantedAuthorities = new HashSet<>();
-            for (String role : authorities) {
-                grantedAuthorities.add(new SimpleGrantedAuthority(role));
+            Integer userId = (Integer) userInfo.get("userId");
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication == null) {
+                SysUser sysUser = sysUserService.getById(userId);
+                // 存入 ThreadLocal 中
+                Authentication authData = sysUserService.getUserAuthentication(sysUser);
+                SecurityContextHolder.getContext().setAuthentication(authData);
             }
-
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userName, null, grantedAuthorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
             chain.doFilter(request, response);
         } catch (Exception e) {
             log.error("Token 验证异常，原因：{}", e.getMessage(), e);

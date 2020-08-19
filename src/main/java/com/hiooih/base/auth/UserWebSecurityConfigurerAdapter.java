@@ -134,24 +134,4 @@ public class UserWebSecurityConfigurerAdapter extends WebSecurityConfigurerAdapt
         defaultWebSecurityExpressionHandler.setPermissionEvaluator(new UserPermissionEvaluator());
         return defaultWebSecurityExpressionHandler;
     }
-
-    public static class SecurityUserInit {
-        @Bean
-        public UserDetailsService userDetailsService() {
-            InMemoryUserDetailsManager inMemoryUserDetailsManager = new InMemoryUserDetailsManager();
-            inMemoryUserDetailsManager.createUser(
-                    User.withUsername("user")
-                            .password("123")
-                            .roles("user")
-                            .build()
-            );
-            inMemoryUserDetailsManager.createUser(
-                    User.withUsername("guest")
-                            .password("123")
-                            .roles("guest")
-                            .build()
-            );
-            return inMemoryUserDetailsManager;
-        }
-    }
 }
